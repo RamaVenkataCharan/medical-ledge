@@ -1,0 +1,33 @@
+# Flutter SDK (embedded repo - not part of project source)
+flutter/
+
+# Environment secrets
+medtrack_app/.env
+.env
+
+# Flutter/Dart build artifacts
+medtrack_app/build/
+medtrack_app/.dart_tool/
+medtrack_app/.flutter-plugins
+medtrack_app/.flutter-plugins-dependencies
+
+# Android
+medtrack_app/android/.gradle/
+medtrack_app/android/local.properties
+medtrack_app/android/key.properties
+
+# iOS
+medtrack_app/ios/.symlinks/
+medtrack_app/ios/Pods/
+
+# macOS
+medtrack_app/macos/Pods/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

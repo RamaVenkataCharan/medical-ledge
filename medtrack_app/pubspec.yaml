@@ -1,0 +1,79 @@
+name: medtrack_app
+description: MedTrack - Customer Purchase History for Pharmacy Owners
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Routing
+  go_router: ^14.6.3
+
+  # Backend
+  supabase_flutter: ^2.8.4
+
+  # Models
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Charts
+  fl_chart: ^0.69.2
+
+  # Notifications
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.1
+  flutter_timezone: ^2.1.0
+
+  # Formatting / i18n
+  intl: ^0.20.2
+
+  # Files & sharing
+  path_provider: ^2.1.5
+  share_plus: ^10.1.3
+  file_picker: ^8.1.7
+
+  # Images
+  image_picker: ^1.1.2
+  cached_network_image: ^3.4.1
+
+  # OTP input
+  pinput: ^5.0.0
+
+  # Confetti
+  confetti: ^0.8.0
+
+  # Environment
+  flutter_dotenv: ^5.2.1
+
+  # Storage
+  shared_preferences: ^2.3.4
+
+  # Google Fonts
+  google_fonts: ^6.2.1
+
+  # Cupertino icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.13
+  freezed: ^2.5.8
+  json_serializable: ^6.9.2
+  riverpod_generator: ^2.6.3
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env
