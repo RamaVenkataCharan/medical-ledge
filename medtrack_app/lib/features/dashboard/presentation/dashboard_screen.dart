@@ -531,7 +531,7 @@ class _RecentCustomerTile extends StatelessWidget {
                 children: [
                   Text(name, style: AppTextStyles.labelLarge),
                   Text(
-                    '$phone${village.isNotEmpty ? ' Â· $village' : ''}',
+                    '$phone${village.isNotEmpty ? ' · $village' : ''}',
                     style: AppTextStyles.caption,
                   ),
                 ],
