@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   bool _isLoading = false;
+  bool _isBypassLoading = false;
   String? _errorMessage;
 
   @override
@@ -62,6 +64,35 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return 'Unable to send OTP. Please try again.';
   }
+
+  // ── DEV BYPASS ──────────────────────────────────────────────────────────
+  // Signs in with email + password — skips OTP entirely.
+  // Visible only in debug builds. To activate:
+  //   Supabase dashboard → Authentication → Users → Add user
+  //   Email: dev@medtrack.test   Password: DevPass@123
+  static const _devEmail = 'dev@medtrack.test';
+  static const _devPassword = 'DevPass@123';
+
+  Future<void> _devBypass() async {
+    setState(() { _isBypassLoading = true; _errorMessage = null; });
+    try {
+      await Supabase.instance.client.auth.signInWithPassword(
+        email: _devEmail,
+        password: _devPassword,
+      );
+      if (mounted) context.go(AppRoutes.home);
+    } on AuthException catch (e) {
+      setState(() => _errorMessage =
+          'Dev bypass failed: ${e.message}\n'
+          'Go to Supabase → Authentication → Users → Add user\n'
+          'Email: $_devEmail   Password: $_devPassword');
+    } catch (_) {
+      setState(() => _errorMessage = 'Dev bypass: network error.');
+    } finally {
+      if (mounted) setState(() => _isBypassLoading = false);
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -218,10 +249,95 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 24),
+
+              // ── DEV BYPASS (debug builds only) ──────────────────
+              if (kDebugMode) _buildDevBypass(),
+
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDevBypass() {
+    return Column(
+      children: [
+        const Divider(),
+        const SizedBox(height: 4),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3D6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFB26A00).withValues(alpha: 0.4)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.developer_mode_rounded,
+                      size: 14, color: Color(0xFFB26A00)),
+                  SizedBox(width: 6),
+                  Text(
+                    'DEV BYPASS — debug build only',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFFB26A00),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Signs in as dev@medtrack.test (password: DevPass@123)\n'
+                'Create this user in Supabase → Authentication → Users first.',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 11,
+                  color: Color(0xFFB26A00),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _isBypassLoading ? null : _devBypass,
+                  icon: _isBypassLoading
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Color(0xFFB26A00),
+                          ),
+                        )
+                      : const Icon(Icons.bolt_rounded, size: 16),
+                  label: const Text('Skip OTP — Dev Login'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFFB26A00),
+                    side: const BorderSide(color: Color(0xFFB26A00)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
